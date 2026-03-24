@@ -9,9 +9,11 @@ import SwiftUI
 
 @main
 struct HomeGuardApp: App {
+    
+    @StateObject private var deviceStore = DeviceStore()
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ContentView().environmentObject(deviceStore)
         }
     }
 }
