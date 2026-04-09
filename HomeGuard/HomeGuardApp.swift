@@ -6,14 +6,21 @@
 //
 
 import SwiftUI
+import Firebase
 
 @main
 struct HomeGuardApp: App {
     
+    init(){
+        FirebaseApp.configure()
+        print("Configuring Firebase")
+    }
+    
     @StateObject private var deviceStore = DeviceStore()
+    @StateObject private var authVM = AuthViewModel()
     var body: some Scene {
         WindowGroup {
-            ContentView().environmentObject(deviceStore)
+            ContentView().environmentObject(deviceStore).environmentObject(authVM)
         }
     }
 }
