@@ -9,6 +9,8 @@ import SwiftUI
 
 struct SettingsView: View {
     
+    @EnvironmentObject var authManager: AuthManager
+    
     @State private var alertsEnabled = true
     @State private var showLogoutAlert = false
     
@@ -94,6 +96,14 @@ struct SettingsView: View {
                                 RoundedRectangle(cornerRadius: 10)
                                     .stroke(Color.red.opacity(0.3), lineWidth: 1)
                             )
+                    }
+                    .alert("Log Out", isPresented: $showLogoutAlert) {
+                        Button("Cancel", role: .cancel) {}
+                        Button("Log Out", role: .destructive) {
+                            authManager.logout()
+                        }
+                    }message: {
+                        Text("Are you sure you want to log out?")
                     }
                 }
                 .padding(.horizontal, 20)

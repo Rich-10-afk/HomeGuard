@@ -1,78 +1,72 @@
-//
-//  AuthManager.swift
-//  HomeGuard
-//
-//  Created by Ryan Kibet on 08/04/2026.
-//
-
 import Foundation
+import Firebase
 import FirebaseAuth
 import Combine
 
-class AuthViewModel: ObservableObject {
+class AuthManager: ObservableObject {
     
-    @Published var user: User?
-    @Published var errorMessage: String = ""
+    @Published var isLoggedIn = false
+    @Published var currentUser: User?
+    @Published var errorMessage = ""
+    @Published var isLoading = false
     
     init() {
-        self.user = Auth.auth().currentUser
-    }
-    
-    // SIGN UP
-    func signUp(email: String, password: String) {
-        print("Trying to sign up...")
-        
-        Auth.auth().createUser(withEmail: email, password: password) { result, error in
-            
-            DispatchQueue.main.async {
-                
-                if let error = error {
-                    print("Signup error:", error.localizedDescription)
-                    self.errorMessage = error.localizedDescription
-                    return
-                }
-                
-                print("Signup success")
-                self.user = result?.user
-                self.errorMessage = ""
+        // Check if user is already logged in
+        Auth.auth().addStateDidChangeListener { auth, user in
+            if let user = user {
+                self.currentUser = user
+                self.isLoggedIn = true
+            } else {
+                self.currentUser = nil
+                self.isLoggedIn = false
             }
         }
     }
     
-    //SIGN IN
-    func signIn(email: String, password: String) {
-        print("Trying to log in...")
+    
+    func login(email: String, password: String) {
+        isLoading = true
+        errorMessage = ""
         
         Auth.auth().signIn(withEmail: email, password: password) { result, error in
+            self.isLoading = false
             
-            DispatchQueue.main.async {
-                
-                if let error = error {
-                    print("Login error:", error.localizedDescription)
-                    self.errorMessage = error.localizedDescription
-                    return
-                }
-                
-                print("Login success")
-                self.user = result?.user
-                self.errorMessage = ""
+            if let error = error {
+                self.errorMessage = error.localizedDescription
+                return
             }
+            
+            self.currentUser = result?.user
+            self.isLoggedIn = true
         }
     }
     
-    // SIGN OUT
-    func signOut() {
-        do {
-            try Auth.auth().signOut()
+    
+    func register(email: String, password: String) {
+        isLoading = true
+        errorMessage = ""
+        
+        Auth.auth().createUser(withEmail: email, password: password) { result, error in
+            self.isLoading = false
             
-            DispatchQueue.main.async {
-                self.user = nil
+            if let error = error {
+                self.errorMessage = error.localizedDescription
+                return
             }
             
-            print("User signed out")
-            
+            self.currentUser = result?.user
+            self.isLoggedIn = true
+        }
+    }
+    
+    
+    func logout() {
+        do {
+            try Auth.auth().signOut()
+            isLoggedIn = false
+            currentUser = nil
         } catch {
-            print("Sign out error:", error.localizedDescription)
+            errorMessage = error.localizedDescription
         }
     }
 }

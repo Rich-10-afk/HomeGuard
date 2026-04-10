@@ -110,7 +110,7 @@ struct AddDeviceView: View {
                 }
             }
         }
-        .navigationTitle("Add Device")
+        .navigationTitle("Add Device").foregroundStyle(.white)
         .navigationBarTitleDisplayMode(.inline)
     }
     

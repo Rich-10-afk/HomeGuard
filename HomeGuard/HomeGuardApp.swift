@@ -10,17 +10,18 @@ import Firebase
 
 @main
 struct HomeGuardApp: App {
+    @StateObject private var deviceStore = DeviceStore()
+    @StateObject private var authManager = AuthManager()
     
     init(){
         FirebaseApp.configure()
         print("Configuring Firebase")
     }
     
-    @StateObject private var deviceStore = DeviceStore()
-    @StateObject private var authVM = AuthViewModel()
+    
     var body: some Scene {
         WindowGroup {
-            ContentView().environmentObject(deviceStore).environmentObject(authVM)
+            ContentView().environmentObject(deviceStore).environmentObject(authManager)
         }
     }
 }

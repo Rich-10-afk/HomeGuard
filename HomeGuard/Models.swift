@@ -31,26 +31,53 @@ struct SecurityLog: Identifiable {
 }
 
 class DeviceStore: ObservableObject {
-    @Published var devices: [Device] = [
-        Device(id: 1, name: "Front Door Lock", type: "Smart Lock", status: "Online", lastActive: "9:41 AM", isOnline: true),
-        Device(id: 2, name: "Back Door Lock", type: "Smart Lock", status: "Offline", lastActive: "10:41 AM", isOnline: false),
-        Device(id: 3, name: "Security Camera", type: "Camera", status: "Online", lastActive: "10:41 AM", isOnline: true),
-        Device(id: 4, name: "Living Room Light", type: "Smart Light", status: "Offline", lastActive: "9:30 AM", isOnline: false)
-    ]
+    @Published var devices: [Device] = []
+    @Published var logs: [SecurityLog] = []
     
-    @Published var logs: [SecurityLog] = [
-        SecurityLog(title: "Front Door Unlocked", subtitle: "User: Richie", time: "9:41 AM", type: .access),
-        SecurityLog(title: "Failed Login Attempt", subtitle: "Unknown user", time: "8:30 AM", type: .warning),
-        SecurityLog(title: "Smart Light Turned On", subtitle: "User: Richie", time: "7:15 AM", type: .access),
-        SecurityLog(title: "Unauthorised Access", subtitle: "Unknown device", time: "6:50 AM", type: .danger)
-    ]
+    private let firestoreManager = FirestoreManager()
+    
+    init() {
+        loadData()
+    }
+    
+    func loadData() {
+        firestoreManager.fetchDevices { devices in
+            DispatchQueue.main.async {
+                self.devices = devices
+            }
+        }
+        
+        firestoreManager.fetchLogs { logs in
+            DispatchQueue.main.async {
+                self.logs = logs
+            }
+        }
+    }
     
     func addDevice(_ device: Device) {
         devices.append(device)
+        firestoreManager.addDevice(device)
+        
+        let log = SecurityLog(
+            title: "\(device.name) added",
+            subtitle: "User: Richie",
+            time: "Just now",
+            type: .access
+        )
+        addLog(log)
     }
     
     func removeDevice(_ device: Device) {
         devices.removeAll { $0.id == device.id }
+        firestoreManager.removeDevice(device)
+        
+        let log = SecurityLog(
+            title: "\(device.name) removed",
+            subtitle: "User: Richie",
+            time: "Just now",
+            type: .warning
+        )
+        addLog(log)
     }
     
     func toggleDevice(_ device: Device) {
@@ -59,13 +86,20 @@ class DeviceStore: ObservableObject {
             devices[index].status = devices[index].isOnline ? "Online" : "Offline"
             devices[index].lastActive = "Just now"
             
+            firestoreManager.updateDevice(devices[index])
+            
             let log = SecurityLog(
                 title: "\(device.name) turned \(devices[index].isOnline ? "On" : "Off")",
                 subtitle: "User: Richie",
                 time: "Just now",
                 type: .access
             )
-            logs.insert(log, at: 0)
+            addLog(log)
         }
+    }
+    
+    func addLog(_ log: SecurityLog) {
+        logs.insert(log, at: 0)
+        firestoreManager.addLog(log)
     }
 }

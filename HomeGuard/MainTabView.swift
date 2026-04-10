@@ -25,21 +25,28 @@ struct MainTabView: View {
     
     var body: some View {
         TabView {
-            DashboardView()
-                .tabItem {
-                    Label("Home", systemImage: "house.fill")
-                }
             
-            DevicesView()
-                .tabItem {
-                    Label("Devices", systemImage: "square.grid.2x2.fill")
-                }
-                .environmentObject(deviceStore)
+            NavigationStack{
+                DashboardView()
+                    
+            }.tabItem {
+                Label("Home", systemImage: "house.fill")
+            }
             
-            SettingsView()
-                .tabItem {
-                    Label("Settings", systemImage: "gearshape.fill")
-                }
+            NavigationStack{
+                DevicesView()
+                    
+            }.tabItem {
+                Label("Devices", systemImage: "square.grid.2x2.fill")
+            }
+            .environmentObject(deviceStore)
+            
+            NavigationStack{
+                SettingsView()
+            }.tabItem {
+                Label("Settings", systemImage: "gearshape.fill")
+            }
+            
         }
         .accentColor(Color("AccentGreen"))
         .environmentObject(deviceStore)

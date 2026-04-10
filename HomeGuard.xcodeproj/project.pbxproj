@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		572DC4322F86BAFD00968A2F /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 572DC4312F86BAFD00968A2F /* FirebaseAnalytics */; };
 		572DC4352F86BE8D00968A2F /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 572DC4342F86BE8D00968A2F /* FirebaseAuth */; };
+		572DC4552F8803D000968A2F /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 572DC4542F8803D000968A2F /* FirebaseFirestore */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +31,7 @@
 			files = (
 				572DC4322F86BAFD00968A2F /* FirebaseAnalytics in Frameworks */,
 				572DC4352F86BE8D00968A2F /* FirebaseAuth in Frameworks */,
+				572DC4552F8803D000968A2F /* FirebaseFirestore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -82,6 +84,7 @@
 			packageProductDependencies = (
 				572DC4312F86BAFD00968A2F /* FirebaseAnalytics */,
 				572DC4342F86BE8D00968A2F /* FirebaseAuth */,
+				572DC4542F8803D000968A2F /* FirebaseFirestore */,
 			);
 			productName = HomeGuard;
 			productReference = 571E69042F72F843005256F0 /* HomeGuard.app */;
@@ -370,6 +373,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 572DC4302F86BAFD00968A2F /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseAuth;
+		};
+		572DC4542F8803D000968A2F /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 572DC4302F86BAFD00968A2F /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
